@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import static org.junit.Assert.assertTrue;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
@@ -65,13 +66,25 @@ public class IntegrationControllerTest extends JerseyTestNg.ContainerPerClassTes
         transactionRequest.setFromAccountId(account1Id);
         transactionRequest.setToAccountId(account2Id);
 
+        // perform transaction
         Entity<TransactionRequest> transactionRequestEntity = Entity.entity(transactionRequest, MediaType.APPLICATION_JSON);
         final Response transactionResponse = target("/transactions").request().post(transactionRequestEntity);
         assertEquals(transactionResponse.getStatus(), 200);
 
+        // assert that amount was correctly withdrawn from source account and added to destination account
+        Response account1AfterWithdrawResponse = target("/accounts/" + account1Id).request().get();
+        Account account1AfterWithdraw = account1AfterWithdrawResponse.readEntity(Account.class);
 
+        Response account2AfterWithdrawResponse = target("/accounts/" + account2Id).request().get();
+        Account account2AfterWithdraw = account2AfterWithdrawResponse.readEntity(Account.class);
 
+        BigDecimal balance1 = account1AfterWithdraw.getBalance();
+        BigDecimal balance2 = account2AfterWithdraw.getBalance();
+
+        // assert that balance1 + balance2 gives total balance (i.e. no money lost)
+        BigDecimal sumAcc1Acc2 = balance1.add(balance2);
+        BigDecimal expectedSum = new BigDecimal(200.0);
+        assertTrue(sumAcc1Acc2.compareTo(expectedSum) == 0);
 
     }
-
 }

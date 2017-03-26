@@ -4,10 +4,7 @@ import com.yvaldm.moneytransferservice.entity.Account;
 import com.yvaldm.moneytransferservice.service.AccountService;
 import com.yvaldm.moneytransferservice.service.impl.AccountServiceImpl;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -23,6 +20,13 @@ public class AccountController {
 
     public AccountController(){
         accountService = new AccountServiceImpl();
+    }
+
+    @GET
+    @Path("{accountId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Account find(@PathParam("accountId") Integer accountId){
+        return accountService.find(accountId);
     }
 
     @GET

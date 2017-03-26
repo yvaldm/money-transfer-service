@@ -9,6 +9,7 @@ Sample project for performing money transfering operations.
 * Plain JDBC
 * In-memory HSQL
 * TestNG
+* Maven
 
 ## BUILD
 
@@ -41,7 +42,8 @@ $ java -jar ./target/money-transfer-service-1.0-SNAPSHOT.jar
 
 ## CURL EXAMPLES
 
+```
 curl -i -X GET http://localhost:8080/users
 curl -i -X POST -d '{"name":"sampleUserName"}' -H "Content-Type: application/json" http://localhost:8080/users
-
+```
 
