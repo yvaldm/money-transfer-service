@@ -23,6 +23,7 @@ public class JdbcTemplate {
     private JdbcTemplate() {
 
         try {
+
             Class.forName("org.hsqldb.jdbcDriver");
 
             connection = DriverManager.getConnection("jdbc:hsqldb:moneytransferservice", "sa", "");
@@ -37,6 +38,11 @@ public class JdbcTemplate {
         }
     }
 
+    /**
+     * Method for retrieving id of newly created entity
+     *
+     * @return Integer id of previously created entity
+     */
     public Integer identity(){
 
         Integer result = null;

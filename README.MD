@@ -4,12 +4,12 @@ Sample project for performing money transfering operations.
 
 ## USED TECHNOLOGIES
 
-* Embedded Jetty
-* Jersey (JAX-RS implementation)
+* Embedded Jetty Container 9.4.2.v20170220
+* Jersey (JAX-RS implementation) 2.25
 * Plain JDBC
-* In-memory HSQL
-* TestNG
-* Maven
+* In-memory HSQLDB 1.8.0.7
+* TestNG 6.10
+* Maven 3.3.9
 
 ## BUILD
 
