@@ -1,13 +1,11 @@
 package com.yvaldm.moneytransferservice;
 
-import com.yvaldm.moneytransferservice.controller.HelloServlet;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.util.resource.Resource;
 
-import java.net.URI;
-import java.net.URL;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
 
 /**
  *
@@ -27,27 +25,13 @@ public class MoneyTransferServiceApp {
     public void run() throws Exception {
         Server server = new Server(8080);
 
-        URL webRootLocation = this.getClass().getResource("/webroot/index.html");
-        if (webRootLocation == null) {
-            throw new IllegalStateException("Unable to determine webroot URL location");
-        }
+        ResourceConfig config = new ResourceConfig();
+        config.packages("com.yvaldm.moneytransferservice.controller");
+        ServletHolder servlet = new ServletHolder(new ServletContainer(config));
 
-        URI webRootUri = URI.create(webRootLocation.toURI().toASCIIString().replaceFirst("/index.html$", "/"));
-        System.err.printf("Web Root URI: %s%n", webRootUri);
+        ServletContextHandler context = new ServletContextHandler(server, "/*");
+        context.addServlet(servlet, "/*");
 
-        ServletContextHandler context = new ServletContextHandler();
-        context.setContextPath("/");
-        context.setBaseResource(Resource.newResource(webRootUri));
-        context.setWelcomeFiles(new String[]{"index.html"});
-
-        context.getMimeTypes().addMimeMapping("txt", "text/plain;charset=utf-8");
-
-        //WebAppContext
-        server.setHandler(context);
-
-        // Add Servlet endpoints
-        context.addServlet(HelloServlet.class, "/hello/");
-        context.addServlet(DefaultServlet.class, "/");
 
         // Start Server
         server.start();
