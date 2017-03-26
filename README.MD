@@ -16,7 +16,6 @@ Sample project for performing money transfering operations.
 ```
 $ mvn clean package
 $ java -jar ./target/money-transfer-service-1.0-SNAPSHOT.jar
-
 ```
 
 ## ENTITIES DESCRIPTION
@@ -44,6 +43,8 @@ $ java -jar ./target/money-transfer-service-1.0-SNAPSHOT.jar
 
 ```
 curl -i -X GET http://localhost:8080/users
+```
+```
 curl -i -X POST -d '{"name":"sampleUserName"}' -H "Content-Type: application/json" http://localhost:8080/users
 ```
 

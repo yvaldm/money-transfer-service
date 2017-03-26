@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by valeryyakovlev on 26/03/2017.
  */
-public class AccountServiceTest {
+public class IntegrationServiceTest {
 
     private AccountService accountService = new AccountServiceImpl();
 
@@ -51,6 +51,5 @@ public class AccountServiceTest {
         BigDecimal sumAcc1Acc2 = balance1.add(balance2);
         BigDecimal expectedSum = new BigDecimal(200.0);
         assertTrue(sumAcc1Acc2.compareTo(expectedSum) == 0);
-
     }
 }

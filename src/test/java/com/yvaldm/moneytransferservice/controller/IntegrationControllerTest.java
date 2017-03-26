@@ -27,8 +27,11 @@ public class IntegrationControllerTest extends JerseyTestNg.ContainerPerClassTes
 
     @Override
     protected Application configure() {
-        return new ResourceConfig(new HashSet<>(Arrays.asList(AccountController.class, UserController.class,
-                TransactionController.class)));
+        return new ResourceConfig(
+                new HashSet<>(Arrays.asList(
+                        AccountController.class,
+                        UserController.class,
+                        TransactionController.class)));
     }
 
     @Test
@@ -85,6 +88,5 @@ public class IntegrationControllerTest extends JerseyTestNg.ContainerPerClassTes
         BigDecimal sumAcc1Acc2 = balance1.add(balance2);
         BigDecimal expectedSum = new BigDecimal(200.0);
         assertTrue(sumAcc1Acc2.compareTo(expectedSum) == 0);
-
     }
 }
