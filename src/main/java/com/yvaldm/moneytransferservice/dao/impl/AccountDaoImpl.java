@@ -2,12 +2,12 @@ package com.yvaldm.moneytransferservice.dao.impl;
 
 import com.yvaldm.moneytransferservice.dao.AccountDao;
 import com.yvaldm.moneytransferservice.entity.Account;
+import com.yvaldm.moneytransferservice.exception.BusinessException;
+import com.yvaldm.moneytransferservice.exception.DataAccessException;
+import com.yvaldm.moneytransferservice.helper.JdbcTemplate;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,8 +26,10 @@ public class AccountDaoImpl implements AccountDao {
         List<Account> accountList = new LinkedList<>();
 
         try {
+            Statement statement = jdbcTemplate.getConnection().createStatement();
+            final String sql = "SELECT * FROM ACCOUNTS";
+            ResultSet rs = statement.executeQuery(sql);
 
-            ResultSet rs = jdbcTemplate.query("SELECT * FROM ACCOUNTS");
             while (rs.next()){
                 Account account = new Account();
                 account.setAccountId(rs.getInt("account_id"));
@@ -37,8 +39,9 @@ public class AccountDaoImpl implements AccountDao {
             }
 
             rs.close();
+            statement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DataAccessException("SQL Error", e);
         }
 
         return accountList;
@@ -50,13 +53,20 @@ public class AccountDaoImpl implements AccountDao {
         Account account = new Account();
 
         try {
-            ResultSet query = jdbcTemplate.query("SELECT * FROM ACCOUNTS WHERE ACCOUNT_ID=" + accountId);
-            query.next();
-            account.setBalance(query.getBigDecimal("BALANCE"));
-            account.setAccountId(query.getInt("ACCOUNT_ID"));
-            account.setUserId(query.getInt("USER_ID"));
+            Connection connection = jdbcTemplate.getConnection();
+            final String sql = "SELECT * FROM ACCOUNTS WHERE ACCOUNT_ID=?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, accountId);
+            ResultSet rs = ps.executeQuery();
+
+            rs.next();
+            account.setBalance(rs.getBigDecimal("BALANCE"));
+            account.setAccountId(rs.getInt("ACCOUNT_ID"));
+            account.setUserId(rs.getInt("USER_ID"));
+            rs.close();
+            ps.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DataAccessException("SQL Error", e);
         }
 
         return account;
@@ -64,51 +74,62 @@ public class AccountDaoImpl implements AccountDao {
 
     @Override
     public Integer create(BigDecimal balance, Integer userId) {
-        PreparedStatement preparedStatement;
-        Integer accountId = null;
+
+        Integer accountId;
+
         try {
-            preparedStatement = jdbcTemplate.getConnection().prepareStatement("INSERT INTO ACCOUNTS(BALANCE, USER_ID) VALUES (?, ?)");
-            preparedStatement.setBigDecimal(1,balance);
-            preparedStatement.setInt(2, userId);
-            preparedStatement.executeUpdate();
-            Statement statement = jdbcTemplate.getConnection().createStatement();
-            accountId = jdbcTemplate.identity(statement);
-            statement.close();
-            preparedStatement.close();
+            Connection connection = jdbcTemplate.getConnection();
+            final String sql = "INSERT INTO ACCOUNTS(BALANCE, USER_ID) VALUES (?, ?)";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setBigDecimal(1,balance);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+            accountId = jdbcTemplate.identity();
+            ps.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DataAccessException("SQL Error", e);
         }
+
         return accountId;
     }
 
     @Override
     public synchronized void transfer(Integer fromAccountId, Integer toAccountId, BigDecimal amount) {
 
-        // get balance in source
-        // if balance in source < amount -> error
-
         Account fromAccount = find(fromAccountId);
         Account toAccount = find(toAccountId);
         BigDecimal balance = fromAccount.getBalance();
+
+        // if balance of source account less then zero after withdraw, then throw error
         if(balance.compareTo(amount) < 0 ){
             String balanceStr = DECIMAL_FORMAT.format(balance);
             String amountStr = DECIMAL_FORMAT.format(amount);
-            throw new RuntimeException(
+            throw new BusinessException(
                     String.format("Unable to withdraw. Balance = %s, Withdraw amount = %s, AccountId = %d",
                             balanceStr, amountStr, fromAccountId));
         }
 
         BigDecimal balanceAfterWithdraw = balance.subtract(amount);
-
-        jdbcTemplate.update(String.format("UPDATE ACCOUNTS SET BALANCE = %s WHERE ACCOUNT_ID=%d", balanceAfterWithdraw,
-                fromAccountId));
-
         BigDecimal toAccountBalance = toAccount.getBalance();
         BigDecimal balanceAfterAdd = toAccountBalance.add(amount);
 
-        jdbcTemplate.update(String.format("UPDATE ACCOUNTS SET BALANCE = %s WHERE ACCOUNT_ID=%d",
-                balanceAfterAdd,
-                toAccountId));
+        Connection connection = jdbcTemplate.getConnection();
 
+        try {
+
+            final String sql = "UPDATE ACCOUNTS SET BALANCE=? WHERE ACCOUNT_ID=?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setBigDecimal(1, balanceAfterWithdraw);
+            ps.setInt(2, fromAccountId);
+            ps.executeUpdate();
+
+            ps.setBigDecimal(1, balanceAfterAdd);
+            ps.setInt(2, toAccountId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DataAccessException("SQL Error", e);
+        }
     }
+
 }
