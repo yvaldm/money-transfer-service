@@ -16,19 +16,13 @@ public class AccountControllerTest extends JerseyTestNg.ContainerPerClassTest {
 
     @Override
     protected Application configure() {
-        return new ResourceConfig(HelloWorldService.class);
+        return new ResourceConfig(AccountController.class);
     }
 
-    @Test(priority = 1)
+    @Test
     public void first() throws Exception {
-        test(1);
-    }
-
-    private void test(final Integer expected) {
         final Response response = target("/hellojersey").request().get();
-
         assertEquals(response.getStatus(), 200);
         //assertEquals(response.readEntity(Integer.class), expected);
     }
-
 }

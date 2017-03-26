@@ -4,10 +4,9 @@ import com.yvaldm.moneytransferservice.entity.User;
 import com.yvaldm.moneytransferservice.service.UserService;
 import com.yvaldm.moneytransferservice.service.impl.UserServiceImpl;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -24,18 +23,16 @@ public class UserController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<User>  findAll() {
-        Integer user1 = userService.create("asdasd");
-        Integer user2 = userService.create("asdasqqq");
-        List<User> users = userService.findAll();
-        //String output = "Jersey say : " + msg;
-
-        userService.delete(user1);
-        userService.delete(user2);
-
-        return users;
+    public List<User> findAll() {
+        return userService.findAll();
     }
 
-
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response create(User user){
+        Integer userId = userService.create(user.getName());
+        return Response.ok(userId).build();
+    }
 
 }
