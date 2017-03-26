@@ -14,7 +14,6 @@ import static org.testng.Assert.assertEquals;
  */
 public class AccountControllerTest extends JerseyTestNg.ContainerPerClassTest {
 
-
     @Override
     protected Application configure() {
         return new ResourceConfig(HelloWorldService.class);
