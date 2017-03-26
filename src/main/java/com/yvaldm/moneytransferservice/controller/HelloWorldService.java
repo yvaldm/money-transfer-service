@@ -12,7 +12,8 @@ import javax.ws.rs.core.Response;
 public class HelloWorldService {
 
     @GET
-    @Path("/{param}")
+    //@Path("/{param}")
+    //public Response getMsg(@PathParam("param") String msg) {
     public Response getMsg(@PathParam("param") String msg) {
 
         String output = "Jersey say : " + msg;
