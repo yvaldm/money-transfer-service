@@ -13,6 +13,8 @@ public interface UserService {
 
     User find(Integer userId);
 
+    void delete(Integer userId);
+
     Integer create(String name);
 
 }

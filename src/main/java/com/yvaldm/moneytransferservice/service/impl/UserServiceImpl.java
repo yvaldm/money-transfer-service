@@ -29,6 +29,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void delete(Integer userId) {
+        userDao.delete(userId);
+    }
+
+    @Override
     public Integer create(String name) {
         return userDao.create(name);
     }

@@ -15,4 +15,6 @@ public interface UserDao {
 
     Integer create(String name);
 
+    void delete(Integer userId);
+
 }

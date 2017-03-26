@@ -1,6 +1,5 @@
 package com.yvaldm.moneytransferservice;
 
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -32,8 +31,6 @@ public class MoneyTransferServiceApp {
         ServletContextHandler context = new ServletContextHandler(server, "/*");
         context.addServlet(servlet, "/*");
 
-
-        // Start Server
         server.start();
         server.join();
     }

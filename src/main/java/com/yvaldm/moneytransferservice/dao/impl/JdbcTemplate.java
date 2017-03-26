@@ -68,7 +68,6 @@ public class JdbcTemplate {
 
         Integer result = null;
         try {
-
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
             resultSet.next();
             Object identityObject = resultSet.getObject(1);

@@ -27,6 +27,7 @@ public class AccountServiceTest {
         IntStream.range(0, 10).forEach(i -> userService.create("sample_user_"+i));
 
         List<User> users = userService.findAll();
+
         assertTrue(users.size() == 10);
         User user = users.get(0);
         Integer userId = user.getUserId();
@@ -44,7 +45,6 @@ public class AccountServiceTest {
 
         accountService.transfer(account1.getAccountId(), account2.getAccountId(), new BigDecimal(53.2));
 
-
         Account account1AfterTransfer = accountService.find(account1.getAccountId());
         Account account2AfterTransfer = accountService.find(account2.getAccountId());
 
@@ -54,8 +54,6 @@ public class AccountServiceTest {
         BigDecimal sumAcc1Acc2 = balance1.add(balance2);
         BigDecimal expectedSum = new BigDecimal(200.0);
         assertTrue(sumAcc1Acc2.compareTo(expectedSum) == 0);
-
-
 
     }
 }

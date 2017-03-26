@@ -60,4 +60,9 @@ public class UserDaoImpl implements UserDao {
     public Integer create(String name) {
         return jdbcTemplate.insert(String.format("INSERT INTO USERS(NAME) VALUES ('%s')", name));
     }
+
+    @Override
+    public void delete(Integer userId) {
+        jdbcTemplate.update("DELETE FROM USERS WHERE USER_ID=" + userId);
+    }
 }
