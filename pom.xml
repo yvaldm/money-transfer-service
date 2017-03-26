@@ -66,6 +66,13 @@
             <version>6.10</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/hsqldb/hsqldb -->
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+        </dependency>
+
 
     </dependencies>
 
