@@ -27,24 +27,38 @@ $ java -jar ./target/money-transfer-service-1.0-SNAPSHOT.jar
 
 ### User Controller
 
+```
 [GET] /users -- return list of all users
 [POST] /users -- creates new user (name is taken from JSON body)
-
+```
 ### Account Controller
-
+```
 [GET] /accounts -- return list of all accounts
 [POST] /accounts -- creates new account belonging to existing user (no unassigned accounts allowed)
-
+```
 ### Transaction Controller
-
+```
 [POST] /transaction -- performs transaction (details are taken from JSON body)
-
+```
 ## CURL EXAMPLES
 
+Get list of users
 ```
 curl -i -X GET http://localhost:8080/users
 ```
+Create new user
 ```
 curl -i -X POST -d '{"name":"sampleUserName"}' -H "Content-Type: application/json" http://localhost:8080/users
 ```
-
+Get list of accounts
+```
+curl -i -X  GET http://localhost:8080/accounts
+```
+Create account for existing user
+```
+curl -i -X POST -d '{"balance":100.0, "userId":"1"}' -H "Content-Type: application/json" http://localhost:8080/accounts
+```
+Perform transfer of specific amount from account to account
+```
+curl -i -X POST -d '{"fromAccountId":0, "toAccountId":"1", "amount":44.44}' -H "Content-Type: application/json" http://localhost:8080/transactions
+```
