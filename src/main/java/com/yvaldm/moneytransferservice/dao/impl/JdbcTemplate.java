@@ -51,32 +51,59 @@ public class JdbcTemplate {
         }
     }
 
-    public Integer insert(String expression) {
+    public Integer insert(String sql) {
         Statement statement;
         Integer result = null;
         try {
             statement = connection.createStatement();
-            statement.execute(expression);
-            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
-            resultSet.next();
-            Object identityObject = resultSet.getObject(1);
-            if(identityObject instanceof Integer) {
-                result = (Integer) identityObject;
-            }
-            resultSet.close();
-            statement.close();
+            statement.execute(sql);
+            result = identity(statement);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;
     }
 
+    public Integer identity(Statement statement){
+
+        Integer result = null;
+        try {
+
+            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+            resultSet.next();
+            Object identityObject = resultSet.getObject(1);
+            if (identityObject instanceof Integer) {
+                result = (Integer) identityObject;
+            }
+            resultSet.close();
+            statement.close();
+        }catch (SQLException e ){
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    public void update(String expression) {
+        Statement statement;
+
+        try {
+            statement = connection.createStatement();
+            statement.executeUpdate(expression);
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public ResultSet query(String expression) throws SQLException {
-        Statement st;
-        ResultSet rs = null;
-        st = connection.createStatement();
-        rs = st.executeQuery(expression);
+        Statement st = connection.createStatement();
+        ResultSet rs = st.executeQuery(expression);
         st.close();
         return rs;
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 }
