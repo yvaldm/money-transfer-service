@@ -37,6 +37,7 @@ public class AccountController {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response createAccount(Account account) {
         Integer accountId = accountService.create(account.getBalance(), account.getUserId());
         return Response.ok(accountId).build();

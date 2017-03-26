@@ -94,41 +94,49 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
-    public synchronized void transfer(Integer fromAccountId, Integer toAccountId, BigDecimal amount) {
+    public void transfer(Integer fromAccountId, Integer toAccountId, BigDecimal amount) {
+        Integer accountId1 = fromAccountId < toAccountId ? fromAccountId : toAccountId;
+        Integer accountId2 = fromAccountId < toAccountId ? toAccountId : fromAccountId;
 
-        Account fromAccount = find(fromAccountId);
-        Account toAccount = find(toAccountId);
-        BigDecimal balance = fromAccount.getBalance();
+        synchronized (accountId1) {
+            synchronized (accountId2) {
 
-        // if balance of source account less then zero after withdraw, then throw error
-        if(balance.compareTo(amount) < 0 ){
-            String balanceStr = DECIMAL_FORMAT.format(balance);
-            String amountStr = DECIMAL_FORMAT.format(amount);
-            throw new BusinessException(
-                    String.format("Unable to withdraw. Balance = %s, Withdraw amount = %s, AccountId = %d",
-                            balanceStr, amountStr, fromAccountId));
-        }
+                Account fromAccount = find(fromAccountId);
+                Account toAccount = find(toAccountId);
+                BigDecimal balance = fromAccount.getBalance();
 
-        BigDecimal balanceAfterWithdraw = balance.subtract(amount);
-        BigDecimal toAccountBalance = toAccount.getBalance();
-        BigDecimal balanceAfterAdd = toAccountBalance.add(amount);
+                // if balance of source account less then zero after withdraw, then throw error
+                if (balance.compareTo(amount) < 0) {
+                    String balanceStr = DECIMAL_FORMAT.format(balance);
+                    String amountStr = DECIMAL_FORMAT.format(amount);
+                    throw new BusinessException(
+                            String.format("Unable to withdraw. Balance = %s, Withdraw amount = %s, AccountId = %d",
+                                    balanceStr, amountStr, fromAccountId));
+                }
 
-        Connection connection = jdbcTemplate.getConnection();
+                BigDecimal balanceAfterWithdraw = balance.subtract(amount);
+                BigDecimal toAccountBalance = toAccount.getBalance();
+                BigDecimal balanceAfterAdd = toAccountBalance.add(amount);
 
-        try {
+                Connection connection = jdbcTemplate.getConnection();
 
-            final String sql = "UPDATE ACCOUNTS SET BALANCE=? WHERE ACCOUNT_ID=?";
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setBigDecimal(1, balanceAfterWithdraw);
-            ps.setInt(2, fromAccountId);
-            ps.executeUpdate();
+                try {
 
-            ps.setBigDecimal(1, balanceAfterAdd);
-            ps.setInt(2, toAccountId);
-            ps.executeUpdate();
+                    final String sql = "UPDATE ACCOUNTS SET BALANCE=? WHERE ACCOUNT_ID=?";
+                    PreparedStatement ps = connection.prepareStatement(sql);
+                    ps.setBigDecimal(1, balanceAfterWithdraw);
+                    ps.setInt(2, fromAccountId);
+                    ps.executeUpdate();
 
-        } catch (SQLException e) {
-            throw new DataAccessException("SQL Error", e);
+                    ps.setBigDecimal(1, balanceAfterAdd);
+                    ps.setInt(2, toAccountId);
+                    ps.executeUpdate();
+
+                } catch (SQLException e) {
+                    throw new DataAccessException("SQL Error", e);
+                }
+            }
+
         }
     }
 
