@@ -34,6 +34,7 @@ $ java -jar ./target/money-transfer-service-1.0-SNAPSHOT.jar
 ### Account Controller
 ```
 [GET] /accounts -- return list of all accounts
+[GET] /accounts/{accountId} -- return info on account with specific accountId
 [POST] /accounts -- creates new account belonging to existing user (no unassigned accounts allowed)
 ```
 ### Transaction Controller
@@ -53,6 +54,10 @@ curl -i -X POST -d '{"name":"sampleUserName"}' -H "Content-Type: application/jso
 Get list of accounts
 ```
 curl -i -X  GET http://localhost:8080/accounts
+```
+Get info on specific account
+```
+curl -i -X  GET http://localhost:8080/accounts/1
 ```
 Create account for existing user
 ```
