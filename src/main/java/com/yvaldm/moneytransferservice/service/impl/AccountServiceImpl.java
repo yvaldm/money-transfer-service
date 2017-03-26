@@ -10,6 +10,7 @@ import java.util.List;
  * Created by valeryyakovlev on 26/03/2017.
  */
 public class AccountServiceImpl implements AccountService {
+
     @Override
     public List<Account> findAll() {
         return null;
@@ -26,7 +27,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public int transfer(Integer fromAccountId, Integer toAccountId) {
-        return 0;
+    public void transfer(Integer fromAccountId, Integer toAccountId, BigDecimal amount) {
+        return;
     }
+
 }

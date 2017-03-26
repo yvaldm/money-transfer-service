@@ -13,6 +13,6 @@ public interface UserService {
 
     User find(Integer userId);
 
-    void create(String name);
+    Integer create(String name);
 
 }

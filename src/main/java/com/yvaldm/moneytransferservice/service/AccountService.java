@@ -16,6 +16,6 @@ public interface AccountService {
 
     void create(BigDecimal balance, Integer userId);
 
-    int transfer(Integer fromAccountId, Integer toAccountId);
+    void transfer(Integer fromAccountId, Integer toAccountId, BigDecimal amount);
 
 }
