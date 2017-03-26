@@ -15,7 +15,7 @@ import java.util.List;
 @Path("/users")
 public class UserController {
 
-    UserService userService;
+    private UserService userService;
 
     public UserController() {
         userService = new UserServiceImpl();

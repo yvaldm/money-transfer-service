@@ -28,20 +28,17 @@ public class AccountServiceTest {
 
         List<User> users = userService.findAll();
 
-        assertTrue(users.size() == 10);
+        assertTrue(users.size() > 0);
         User user = users.get(0);
         Integer userId = user.getUserId();
+        Integer accountId = accountService.create(new BigDecimal(100.0), userId);
 
-        IntStream.range(0, 10).forEach(i -> accountService.create(new BigDecimal(100.0), userId));
-
-        List<Account> accounts = accountService.findAll();
-        assertTrue(accounts.size() == 10);
-        Account account = accounts.get(0);
+        Account account = accountService.find(accountId);
         BigDecimal balance = account.getBalance();
         assertTrue(new BigDecimal(100.0).equals(balance));
 
-        Account account1 = accounts.get(1);
-        Account account2 = accounts.get(2);
+        Account account1 = accountService.find(accountService.create(new BigDecimal(100.0), userId));
+        Account account2 = accountService.find(accountService.create(new BigDecimal(100.0), userId));
 
         accountService.transfer(account1.getAccountId(), account2.getAccountId(), new BigDecimal(53.2));
 

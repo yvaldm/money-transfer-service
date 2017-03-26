@@ -10,6 +10,14 @@ Sample project for performing money transfering operations.
 * In-memory HSQL
 * TestNG
 
+## BUILD
+
+```
+$ mvn clean package
+$ java -jar ./target/money-transfer-service-1.0-SNAPSHOT.jar
+
+```
+
 ## ENTITIES DESCRIPTION
 
 * USER (INTEGER USER_ID, STRING NAME)

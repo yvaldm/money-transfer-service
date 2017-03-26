@@ -1,9 +1,16 @@
 package com.yvaldm.moneytransferservice.controller;
 
+import com.yvaldm.moneytransferservice.entity.Account;
 import com.yvaldm.moneytransferservice.service.AccountService;
 import com.yvaldm.moneytransferservice.service.impl.AccountServiceImpl;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * Created by valeryyakovlev on 26/03/2017.
@@ -14,9 +21,20 @@ public class AccountController {
 
     private AccountService accountService;
 
-    AccountController(){
+    public AccountController(){
         accountService = new AccountServiceImpl();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Account> findAll() {
+        return accountService.findAll();
+    }
 
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createAccount(Account account) {
+        Integer accountId = accountService.create(account.getBalance(), account.getUserId());
+        return Response.ok(accountId).build();
+    }
 }
