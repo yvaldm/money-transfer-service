@@ -39,7 +39,7 @@ $ java -jar ./target/money-transfer-service-1.0-SNAPSHOT.jar
 ```
 ### Transaction Controller
 ```
-[POST] /transaction -- performs transaction (details are taken from JSON body)
+[POST] /transactions -- performs transaction (details are taken from JSON body)
 ```
 ## CURL EXAMPLES
 
