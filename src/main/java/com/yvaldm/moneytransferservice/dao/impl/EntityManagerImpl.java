@@ -6,11 +6,11 @@ import java.sql.*;
  * Created by valeryyakovlev on 26/03/2017.
  */
 
-public class Testdb {
+public class EntityManagerImpl {
 
     Connection conn;
 
-    public Testdb() throws Exception {
+    public EntityManagerImpl() throws Exception {
         Class.forName("org.hsqldb.jdbcDriver");
         conn = DriverManager.getConnection("jdbc:hsqldb:moneytransferservice", "sa", "");
     }
@@ -34,10 +34,7 @@ public class Testdb {
 
     public synchronized void update(String expression) throws SQLException {
 
-        Statement st = null;
-
-        st = conn.createStatement();
-
+        Statement st = conn.createStatement();
         int i = st.executeUpdate(expression);
 
         if (i == -1) {
@@ -45,7 +42,7 @@ public class Testdb {
         }
 
         st.close();
-    }    // void update()
+    }
 
     public static void dump(ResultSet rs) throws SQLException {
         ResultSetMetaData meta = rs.getMetaData();
@@ -67,10 +64,10 @@ public class Testdb {
 
     public static void main(String[] args) {
 
-        Testdb db = null;
+        EntityManagerImpl db = null;
 
         try {
-            db = new Testdb();
+            db = new EntityManagerImpl();
         } catch (Exception ex1) {
             ex1.printStackTrace();
             return;
